@@ -26,7 +26,6 @@ func NewSeeLogLogger(mode, logPath string, platform, server, process uint64, app
 	content = strings.Replace(content, "%platformid", strconv.FormatUint(platform, 10), -1)
 	content = strings.Replace(content, "%serverid", strconv.FormatUint(server, 10), -1)
 	content = strings.Replace(content, "%processidx", strconv.FormatUint(process, 10), -1)
-	fmt.Println(content)
 
 	seeLogLogger.logger, err = seelog.LoggerFromConfigAsString(content)
 	// logger, err := seelog.LoggerFromConfigAsFile(logPath)

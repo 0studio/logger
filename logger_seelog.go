@@ -31,6 +31,7 @@ func NewSeeLogLogger(mode, logPath string, platform, server, process uint64, app
 	// logger, err := seelog.LoggerFromConfigAsFile(logPath)
 	if err != nil {
 		fmt.Println(err)
+		panic("init_seelog_fail")
 		// os.Exit(defs.EXIT_CODE_SEELOG_INIT_FAIL)
 	}
 

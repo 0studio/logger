@@ -77,27 +77,65 @@ func (seelogger *SeeLogLogger) Error(v ...interface{}) {
 	if !seelogger.IsModePro() {
 		fmt.Println(seelogger.GetPathLine(), v)
 	}
-	seelog.Error(seelogger.GetPathLine(), v)
+	if !seelogger.IsModeTest() {
+		seelog.Error(seelogger.GetPathLine(), v)
+	}
 }
 func (seelogger *SeeLogLogger) Flush() {
 	seelog.Flush()
 }
 
 func (seelogger *SeeLogLogger) Info(v ...interface{}) {
-	seelog.Info(v)
+	if seelogger.IsModeTest() {
+		fmt.Println("[Info]:", v)
+	} else {
+		seelog.Info(v)
+		if seelogger.IsModeDev() {
+			seelogger.Flush()
+		}
+	}
 }
 func (seelogger *SeeLogLogger) Warn(v ...interface{}) {
-	seelog.Warn(v)
+	if seelogger.IsModeTest() {
+		fmt.Println("[Warn]:", v)
+	} else {
+		seelog.Warn(v)
+		if seelogger.IsModeDev() {
+			seelogger.Flush()
+		}
+	}
 }
 func (seelogger *SeeLogLogger) Warnf(format string, params ...interface{}) {
-	seelog.Warnf(format, params...)
+	if seelogger.IsModeTest() {
+		fmt.Printf("[Warn]:"+format, params...)
+	} else {
+		seelog.Warnf(format, params...)
+		if seelogger.IsModeDev() {
+			seelogger.Flush()
+		}
+	}
 }
 
 func (seelogger *SeeLogLogger) Infof(format string, params ...interface{}) {
-	seelog.Infof(format, params...)
+	if seelogger.IsModeTest() {
+		fmt.Printf("[Info]:"+format, params...)
+	} else {
+		seelog.Infof(format, params...)
+		if seelogger.IsModeDev() {
+			seelogger.Flush()
+		}
+	}
 }
+
 func (seelogger *SeeLogLogger) Errorf(format string, params ...interface{}) {
-	seelog.Errorf(fmt.Sprintf("%s:%s", seelogger.GetPathLine(), format), params...)
+	if seelogger.IsModeTest() {
+		fmt.Printf(fmt.Sprintf("[Error]:%s:%s", seelogger.GetPathLine(), format), params...)
+	} else {
+		seelog.Errorf(fmt.Sprintf("%s:%s", seelogger.GetPathLine(), format), params...)
+		if seelogger.IsModeDev() {
+			seelogger.Flush()
+		}
+	}
 }
 func (seelogger *SeeLogLogger) GetPathLine() string {
 	_, path, line, ok := runtime.Caller(2)

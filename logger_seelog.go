@@ -97,7 +97,7 @@ func (seelogger *SeeLogLogger) Info(v ...interface{}) {
 }
 func (seelogger *SeeLogLogger) Warn(v ...interface{}) {
 	if seelogger.IsModeTest() {
-		fmt.Println("[Warn]:", v)
+		fmt.Println("[Warn]", fmt.Sprintf("%s:", seelogger.GetPathLine), v)
 	} else {
 		seelog.Warn(v)
 		if seelogger.IsModeDev() {
@@ -107,9 +107,9 @@ func (seelogger *SeeLogLogger) Warn(v ...interface{}) {
 }
 func (seelogger *SeeLogLogger) Warnf(format string, params ...interface{}) {
 	if seelogger.IsModeTest() {
-		fmt.Printf("[Warn]:"+format, params...)
+		fmt.Printf("[Warn]"+fmt.Sprintf("%s:%s", seelogger.GetPathLine(), format), params...)
 	} else {
-		seelog.Warnf(format, params...)
+		seelog.Warnf(fmt.Sprintf("%s:%s", seelogger.GetPathLine(), format), params...)
 		if seelogger.IsModeDev() {
 			seelogger.Flush()
 		}

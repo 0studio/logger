@@ -18,7 +18,7 @@ func (out *StdoutLogger) Debug(v ...interface{}) {
 	fmt.Println(v)
 }
 func (out *StdoutLogger) Debugf(format string, params ...interface{}) {
-	fmt.Printf(format+"\n", params)
+	fmt.Printf(format+"\n", params...)
 }
 
 func (out *StdoutLogger) LogError(err error) {
@@ -37,13 +37,13 @@ func (out *StdoutLogger) Warn(v ...interface{}) {
 	fmt.Println(v)
 }
 func (out *StdoutLogger) Warnf(format string, params ...interface{}) {
-	fmt.Println(format, params)
+	fmt.Printf(format+"\n", params...)
 }
 
 func (out *StdoutLogger) Infof(format string, params ...interface{}) {
-	fmt.Println(format, params)
+	fmt.Printf(format+"\n", params...)
 }
 
 func (out *StdoutLogger) Errorf(format string, params ...interface{}) {
-	fmt.Println(format, params)
+	fmt.Printf(format+"\n", params...)
 }

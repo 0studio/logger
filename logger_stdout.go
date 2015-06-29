@@ -13,6 +13,18 @@ type StdoutLogger struct {
 
 func (out *StdoutLogger) Close() {
 }
+func (out *StdoutLogger) DebugVV(v ...interface{}) {
+	fmt.Println(v)
+}
+func (out *StdoutLogger) DebugVVf(format string, params ...interface{}) {
+	fmt.Printf(format+"\n", params...)
+}
+func (out *StdoutLogger) DebugVVV(v ...interface{}) {
+	fmt.Println(v)
+}
+func (out *StdoutLogger) DebugVVVf(format string, params ...interface{}) {
+	fmt.Printf(format+"\n", params...)
+}
 
 func (out *StdoutLogger) Debug(v ...interface{}) {
 	fmt.Println(v)

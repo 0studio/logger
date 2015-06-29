@@ -5,6 +5,13 @@ type Logger interface {
 	Flush()
 	Debug(v ...interface{})
 	Debugf(format string, params ...interface{})
+
+	DebugVV(v ...interface{})
+	DebugVVf(format string, params ...interface{})
+
+	DebugVVV(v ...interface{})
+	DebugVVVf(format string, params ...interface{})
+
 	LogError(err error)
 	Error(v ...interface{})
 	Info(v ...interface{})

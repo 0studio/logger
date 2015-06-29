@@ -10,12 +10,20 @@ import (
 )
 
 type SeeLogLogger struct {
-	logger seelog.LoggerInterface
-	mode   string
+	logger     seelog.LoggerInterface
+	mode       string
+	debugLevel int
 }
 
-func NewSeeLogLogger(mode, logPath string, platform, server, process uint64, appName string) Logger {
+const (
+	DebugLevelDefault = 0
+	DebugLevelVV      = 1
+	DebugLevelVVV     = 2
+)
+
+func NewSeeLogLogger(debugLevel int, mode, logPath string, platform, server, process uint64, appName string) Logger {
 	var seeLogLogger SeeLogLogger
+	seeLogLogger.debugLevel = debugLevel
 	seeLogLogger.mode = mode
 	byteContent, err := ioutil.ReadFile(logPath)
 	if err != nil {
@@ -62,11 +70,46 @@ func (seelogger *SeeLogLogger) Debug(v ...interface{}) {
 	if seelogger.IsModeDev() {
 		// 虽然可以在seelog.xml 里配置 Debug的内容不打印， 但是 似乎 seelog  在处理的时候
 		seelog.Debug(seelogger.GetPathLine(), v)
+		seelog.Info(seelogger.GetPathLine(), v)
 	}
 }
 func (seelogger *SeeLogLogger) Debugf(format string, params ...interface{}) {
 	if seelogger.IsModeDev() {
 		seelog.Debugf(fmt.Sprintf("%s:%s", seelogger.GetPathLine(), format), params...)
+		seelog.Infof(fmt.Sprintf("%s:%s", seelogger.GetPathLine(), format), params...)
+	}
+}
+
+func (seelogger *SeeLogLogger) DebugVV(v ...interface{}) {
+	// 如果debug 的日志太多，会导致如下提示
+	// Seelog queue overflow: more than 10000 messages in the queue. Flushing.
+
+	if seelogger.IsModeDev() && seelogger.debugLevel >= DebugLevelVV {
+		// 虽然可以在seelog.xml 里配置 Debug的内容不打印， 但是 似乎 seelog  在处理的时候
+		seelog.Debug(seelogger.GetPathLine(), v)
+		seelog.Info(seelogger.GetPathLine(), v)
+	}
+}
+func (seelogger *SeeLogLogger) DebugVVf(format string, params ...interface{}) {
+	if seelogger.IsModeDev() && seelogger.debugLevel >= DebugLevelVV {
+		seelog.Debugf(fmt.Sprintf("%s:%s", seelogger.GetPathLine(), format), params...)
+		seelog.Infof(fmt.Sprintf("%s:%s", seelogger.GetPathLine(), format), params...)
+	}
+}
+func (seelogger *SeeLogLogger) DebugVVV(v ...interface{}) {
+	// 如果debug 的日志太多，会导致如下提示
+	// Seelog queue overflow: more than 10000 messages in the queue. Flushing.
+
+	if seelogger.IsModeDev() && seelogger.debugLevel >= DebugLevelVVV {
+		// 虽然可以在seelog.xml 里配置 Debug的内容不打印， 但是 似乎 seelog  在处理的时候
+		seelog.Debug(seelogger.GetPathLine(), v)
+		seelog.Info(seelogger.GetPathLine(), v)
+	}
+}
+func (seelogger *SeeLogLogger) DebugVVVf(format string, params ...interface{}) {
+	if seelogger.IsModeDev() && seelogger.debugLevel >= DebugLevelVVV {
+		seelog.Debugf(fmt.Sprintf("%s:%s", seelogger.GetPathLine(), format), params...)
+		seelog.Infof(fmt.Sprintf("%s:%s", seelogger.GetPathLine(), format), params...)
 	}
 }
 

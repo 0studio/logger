@@ -69,13 +69,11 @@ func (seelogger *SeeLogLogger) Debug(v ...interface{}) {
 
 	if seelogger.IsModeDev() {
 		// 虽然可以在seelog.xml 里配置 Debug的内容不打印， 但是 似乎 seelog  在处理的时候
-		seelog.Debug(seelogger.GetPathLine(), v)
 		seelog.Info(seelogger.GetPathLine(), v)
 	}
 }
 func (seelogger *SeeLogLogger) Debugf(format string, params ...interface{}) {
 	if seelogger.IsModeDev() {
-		seelog.Debugf(fmt.Sprintf("%s:%s", seelogger.GetPathLine(), format), params...)
 		seelog.Infof(fmt.Sprintf("%s:%s", seelogger.GetPathLine(), format), params...)
 	}
 }
@@ -86,13 +84,11 @@ func (seelogger *SeeLogLogger) DebugVV(v ...interface{}) {
 
 	if seelogger.IsModeDev() && seelogger.debugLevel >= DebugLevelVV {
 		// 虽然可以在seelog.xml 里配置 Debug的内容不打印， 但是 似乎 seelog  在处理的时候
-		seelog.Debug(seelogger.GetPathLine(), v)
 		seelog.Info(seelogger.GetPathLine(), v)
 	}
 }
 func (seelogger *SeeLogLogger) DebugVVf(format string, params ...interface{}) {
 	if seelogger.IsModeDev() && seelogger.debugLevel >= DebugLevelVV {
-		seelog.Debugf(fmt.Sprintf("%s:%s", seelogger.GetPathLine(), format), params...)
 		seelog.Infof(fmt.Sprintf("%s:%s", seelogger.GetPathLine(), format), params...)
 	}
 }
@@ -102,13 +98,11 @@ func (seelogger *SeeLogLogger) DebugVVV(v ...interface{}) {
 
 	if seelogger.IsModeDev() && seelogger.debugLevel >= DebugLevelVVV {
 		// 虽然可以在seelog.xml 里配置 Debug的内容不打印， 但是 似乎 seelog  在处理的时候
-		seelog.Debug(seelogger.GetPathLine(), v)
 		seelog.Info(seelogger.GetPathLine(), v)
 	}
 }
 func (seelogger *SeeLogLogger) DebugVVVf(format string, params ...interface{}) {
 	if seelogger.IsModeDev() && seelogger.debugLevel >= DebugLevelVVV {
-		seelog.Debugf(fmt.Sprintf("%s:%s", seelogger.GetPathLine(), format), params...)
 		seelog.Infof(fmt.Sprintf("%s:%s", seelogger.GetPathLine(), format), params...)
 	}
 }

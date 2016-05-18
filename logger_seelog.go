@@ -21,7 +21,7 @@ const (
 	DebugLevelVVV     = 2
 )
 
-func NewSeeLogLogger(debugLevel int, mode, logPath string, platform, server, process uint64, appName string) Logger {
+func NewSeeLogLoggerC(debugLevel int, mode, logPath string, argStack ArgStack) Logger {
 	var seeLogLogger SeeLogLogger
 	seeLogLogger.debugLevel = debugLevel
 	seeLogLogger.mode = mode
@@ -30,17 +30,15 @@ func NewSeeLogLogger(debugLevel int, mode, logPath string, platform, server, pro
 		fmt.Println("read seelog config errr:", err)
 		return &seeLogLogger
 	}
-	content := strings.Replace(string(byteContent), "%appName", appName, -1)
-	content = strings.Replace(content, "%platformid", strconv.FormatUint(platform, 10), -1)
-	content = strings.Replace(content, "%serverid", strconv.FormatUint(server, 10), -1)
-	content = strings.Replace(content, "%processidx", strconv.FormatUint(process, 10), -1)
-
+	
+	content := string(byteContent)
+	for key, value := range argStack {
+		content = strings.Replace(content, fmt.Sprintf("%%%s", key), value, -1)
+	}
 	seeLogLogger.logger, err = seelog.LoggerFromConfigAsString(content)
-	// logger, err := seelog.LoggerFromConfigAsFile(logPath)
 	if err != nil {
 		fmt.Println(err)
 		panic("init_seelog_fail")
-		// os.Exit(defs.EXIT_CODE_SEELOG_INIT_FAIL)
 	}
 
 	seelog.ReplaceLogger(seeLogLogger.logger)
@@ -48,13 +46,16 @@ func NewSeeLogLogger(debugLevel int, mode, logPath string, platform, server, pro
 	return &seeLogLogger
 }
 
-// func Init() {
-// 	logPath := fmt.Sprintf("%sseelog_%s.xml", conf.GetConfigDir(), conf.GetMode())
-// }
-// func ReloadLogger() {
-// 	Close()
-// 	Init()
-// }
+func NewSeeLogLogger(debugLevel int, mode, logPath string, platform, server, process uint64, appName string) Logger {
+	argStack := NewArgStack()
+	argStack.Add("appName", appName)
+	argStack.Add("platformid", strconv.FormatUint(platform, 10))
+	argStack.Add("serverid", strconv.FormatUint(server, 10))
+	argStack.Add("processidx", strconv.FormatUint(process, 10))
+	
+	return NewSeeLogLoggerC(debugLevel, mode, logPath, argStack)
+}
+
 func (seelogger *SeeLogLogger) Close() {
 	if seelogger.logger != nil && !seelogger.logger.Closed() {
 		seelog.Flush()
@@ -190,4 +191,15 @@ func (seelogger *SeeLogLogger) IsModeDev() bool {
 }
 func (seelogger *SeeLogLogger) IsModePro() bool {
 	return seelogger.mode == "pro"
+}
+
+
+type ArgStack map[string]string
+
+func NewArgStack() ArgStack {
+	return make(map[string]string)
+}
+
+func (this ArgStack) Add(key, value string) {
+	this[key] = value
 }
